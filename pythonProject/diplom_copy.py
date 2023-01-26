@@ -3,10 +3,9 @@ from pprint import pprint
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 import requests
-from io import BytesIO
 from datetime import datetime
 
-# from Table import create_tables, session, Course
+from Table import create_tables, session, Course
 
 with open("access_token.txt", "r") as file_object:  # access_token
     token_vk = file_object.read().strip()
@@ -15,16 +14,16 @@ with open("token_community.txt", "r") as file:  # ключ сообщества
     token_community = file.read().strip()
 
 
-# with open("password_base.txt", "r") as file_object:  # access_token
-#     password = file_object.read().strip()
+with open("password_base.txt", "r") as file_object:  # access_token
+    password = file_object.read().strip()
 
-# list_base = password.split(",")
+list_base = password.split(",")
 
-# login= list_base[0]
-# password = list_base[1]
-# database = list_base[2]
+login= list_base[0]
+password = list_base[1]
+database = list_base[2]
 
-# create_tables(login,password,database)
+create_tables(login,password,database)
 
 
 class VKApi():
@@ -130,30 +129,6 @@ def get_sex(response_user):
     return (sex_faind)
 
 
-# def upload_photo(best_photo_link):
-#   three_link = []
-#   for link in best_photo_link:
-#     list_value = []
-#     list_key = ['owner_id', 'id', 'access_key']
-#     upload = vk_api.VkUpload(vk)
-#     img = requests.get(link).content
-#     img_bate = BytesIO(img)
-
-#     response = upload.photo_messages(img_bate)[0]
-
-#     owner_id = response['owner_id']
-#     id = response['id']
-#     access_key = response['access_key']
-
-#     list_value.append(owner_id)
-#     list_value.append(id)
-#     list_value.append(access_key)
-#     dict_for_send = {list_key[i]: list_value[i] for i in range(len(list_key))}
-#     three_link.append(dict_for_send)
-
-#   return three_link
-
-
 def photo_send(id_people_search):
     for key, value in id_people_search.items():
         response_photo = user_vk_name.photos_get(key)
@@ -248,11 +223,13 @@ for event in longpoll.listen():
                         people_search = user_vk_name.users_search(age_go, age_from, sex, city, count, offset)
                         offset = offset + 1
                         people_search_out = people_search[0]
+                        print(people_search_out)
                         people_search_error = people_search[1]
                         if people_search_error == "Error":
                             continue
                         else:
-                            # session(user_id, id_people_search, login, password, database)
+
+                            session(user_id, people_search_out, login, password, database)
                             photo_send(people_search_out)
                             write_msg(event.user_id, "Хотите продолжить поиск?")
                             for event in longpoll.listen():
@@ -269,7 +246,7 @@ for event in longpoll.listen():
                                         else:
                                             photo_send(people_search_out)
                                             write_msg(event.user_id, "Хотите продолжить поиск?")
-                                            # session(user_id, id_people_search, login, password, database
+                                            session(user_id, people_search_out, login, password, database)
                                             continue
                                     if response_2.lower() == "нет":
                                         write_msg(event.user_id, "Пока((")
