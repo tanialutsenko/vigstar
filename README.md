@@ -1,1 +1,1 @@
-# vigstar
+VIGSTAR
