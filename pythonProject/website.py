@@ -11,7 +11,7 @@ def index():
 @app.route("/about")
 def about():
     print(url_for('about'))
-    return "<h1> О Flask </h1>"
+    return render_template('about.html', title = "О сайте", menu = menu)
 
 @app.route("/profile/<username>")
 def profile(username):
