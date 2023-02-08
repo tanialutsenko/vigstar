@@ -1,8 +1,11 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 
 app = Flask(__name__)
 
-menu = ["установка", "первое приложение", "обратная связь"]
+menu = [{"name":"установка", "url": "install-flash"},
+        {"name" :"первое приложение", "url": "first-app"},
+        { "name" :"обратная связь", "url": "contact"}]
+
 @app.route("/")
 def index():
     print(url_for('index'))
@@ -15,11 +18,18 @@ def about():
 
 @app.route("/profile/<username>")
 def profile(username):
-    return f"Пользователь{username}"
+    return render_template('base.html',title = f"Пользователь{username}")
+
+@app.route("/contact", methods = ["POST", "GET"])
+def contact():
+    if request.method == "POST":
+        print(request.form)
+    return render_template('contact.html', title = "Обратная связь",menu = menu)
 
 # with app.test_request_context():
 #     print(url_for('about'))
 #     print(url_for('index'))
+#     print(url_for('profile', username="self"))
 
 if __name__ == "__main__":
     app.run(debug=True)
